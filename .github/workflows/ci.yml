@@ -36,4 +36,5 @@ jobs:
       - name: سيناريو العزل الكامل
         run: npm run smoke
         env:
+          ELECTRON_DISABLE_SANDBOX: '1'
           ELECTRON_DISABLE_SECURITY_WARNINGS: '1'
