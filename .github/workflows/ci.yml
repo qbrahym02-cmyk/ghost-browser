@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: فحوص الوحدة والصيغة
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: تثبيت الاعتماديات
+        run: npm ci
+      - name: فحص الصيغة
+        run: npm run check
+      - name: اختبارات الوحدة
+        run: npm test
+
+  smoke:
+    name: فحص العزل الكامل (سموكي)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: تثبيت الاعتماديات
+        run: npm ci
+      - name: تثبيت Xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb xauth
+      - name: سيناريو العزل الكامل
+        run: npm run smoke
+        env:
+          ELECTRON_DISABLE_SECURITY_WARNINGS: '1'

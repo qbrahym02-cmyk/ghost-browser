@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="color-scheme" content="dark" />
+    <title>تاب جديد — Ghost</title>
+    <link rel="stylesheet" href="ghost://ui/styles/pages.css" />
+  </head>
+  <body class="newtab">
+    <main>
+      <div class="hero">
+        <div class="ghostmark">👻</div>
+        <h1 id="greeting">جهاز جديد، هوية جديدة</h1>
+        <p class="hint" id="hint"></p>
+      </div>
+
+      <section class="idcard" id="idcard">
+        <div class="idflag" id="idflag">🌐</div>
+        <div class="idbody">
+          <div class="idtop"><b id="idplace">—</b><span class="idmode mono" id="idmode"></span></div>
+          <div class="idmeta mono"><span id="idtz"></span> · <span id="idclock" class="clock"></span> · <span id="idlocale"></span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
+          <div class="idshield" id="idshield" title="عناصر محجوبة في هذه الجلسة">🛡 <b id="blocked">0</b></div>
+          <div class="idip mono" id="idip" style="display:none"></div>
+        </div>
+      </section>
+
+      <form class="search" id="searchform">
+        <span class="sicon">⌕</span>
+        <input id="search" type="text" placeholder="ابحث أو اكتب عنواناً…" autocomplete="off" spellcheck="false" />
+        <button type="submit" class="sgo">↵</button>
+      </form>
+
+      <nav class="quick" id="quick"></nav>
+
+      <footer class="foot mono">
+        <span id="engineinfo"></span>
+      </footer>
+    </main>
+    <script type="module" src="ghost://ui/pages/newtab.js"></script>
+  </body>
+</html>

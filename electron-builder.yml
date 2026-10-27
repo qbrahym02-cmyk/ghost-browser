@@ -1,0 +1,64 @@
+# إعدادات التغليف والنشر — Ghost Browser
+# غيّر owner/repo في قسم publish إلى حسابك على GitHub قبل أول إصدار.
+appId: app.ghost.browser
+productName: Ghost Browser
+copyright: Copyright © 2026 Ghost Browser
+
+directories:
+  output: release
+  buildResources: resources
+
+files:
+  - src/**
+  - resources/**
+  - package.json
+  - LICENSE
+  - "!**/*.map"
+  - "!resources/icon-source.png"
+  - "!resources/dev/**"
+
+asar: true
+compression: maximum
+npmRebuild: false
+
+# تحديث عن بُعد عبر GitHub Releases (electron-updater)
+publish:
+  provider: github
+qbrahym02-cmyk
+  repo: ghost-browser
+  releaseType: release
+
+win:
+  icon: resources/icon.ico
+  artifactName: ${productName}-Setup-${version}.${ext}
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: zip
+      arch: [x64]
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Ghost Browser
+  differentialPackage: true        # تحديثات تفاضلية أصغر وأسرع
+  deleteAppDataOnUninstall: false  # القروبات والجلسات تبقى بعد إلغاء التثبيت
+  artifactName: ${productName}-Setup-${version}.${ext}
+
+linux:
+  icon: resources/icons
+  category: Network
+  target:
+    - AppImage
+    - deb
+
+mac:
+  icon: resources/icon-source.png
+  category: public.app-category.utilities
+  target:
+    - dmg
+    - zip
+
+generateUpdatesFilesForAllChannels: true

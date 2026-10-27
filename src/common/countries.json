@@ -1,0 +1,610 @@
+{
+  "COUNTRIES": [
+    {
+      "id": "us-ny",
+      "flag": "🇺🇸",
+      "country": "الولايات المتحدة",
+      "city": "نيويورك",
+      "tz": "America/New_York",
+      "locale": "en-US",
+      "languages": [
+        "en-US",
+        "en"
+      ],
+      "geo": [
+        40.7128,
+        -74.006
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "us-la",
+      "flag": "🇺🇸",
+      "country": "الولايات المتحدة",
+      "city": "لوس أنجلوس",
+      "tz": "America/Los_Angeles",
+      "locale": "en-US",
+      "languages": [
+        "en-US",
+        "en"
+      ],
+      "geo": [
+        34.0522,
+        -118.2437
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "us-chi",
+      "flag": "🇺🇸",
+      "country": "الولايات المتحدة",
+      "city": "شيكاغو",
+      "tz": "America/Chicago",
+      "locale": "en-US",
+      "languages": [
+        "en-US",
+        "en"
+      ],
+      "geo": [
+        41.8781,
+        -87.6298
+      ],
+      "ua": "mac"
+    },
+    {
+      "id": "ca-to",
+      "flag": "🇨🇦",
+      "country": "كندا",
+      "city": "تورونتو",
+      "tz": "America/Toronto",
+      "locale": "en-CA",
+      "languages": [
+        "en-CA",
+        "en"
+      ],
+      "geo": [
+        43.6532,
+        -79.3832
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "gb-ldn",
+      "flag": "🇬🇧",
+      "country": "بريطانيا",
+      "city": "لندن",
+      "tz": "Europe/London",
+      "locale": "en-GB",
+      "languages": [
+        "en-GB",
+        "en"
+      ],
+      "geo": [
+        51.5072,
+        -0.1276
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "de-ber",
+      "flag": "🇩🇪",
+      "country": "ألمانيا",
+      "city": "برلين",
+      "tz": "Europe/Berlin",
+      "locale": "de-DE",
+      "languages": [
+        "de-DE",
+        "de",
+        "en"
+      ],
+      "geo": [
+        52.52,
+        13.405
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "fr-par",
+      "flag": "🇫🇷",
+      "country": "فرنسا",
+      "city": "باريس",
+      "tz": "Europe/Paris",
+      "locale": "fr-FR",
+      "languages": [
+        "fr-FR",
+        "fr",
+        "en"
+      ],
+      "geo": [
+        48.8566,
+        2.3522
+      ],
+      "ua": "mac"
+    },
+    {
+      "id": "nl-ams",
+      "flag": "🇳🇱",
+      "country": "هولندا",
+      "city": "أمستردام",
+      "tz": "Europe/Amsterdam",
+      "locale": "nl-NL",
+      "languages": [
+        "nl-NL",
+        "nl",
+        "en"
+      ],
+      "geo": [
+        52.3676,
+        4.9041
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "es-mad",
+      "flag": "🇪🇸",
+      "country": "إسبانيا",
+      "city": "مدريد",
+      "tz": "Europe/Madrid",
+      "locale": "es-ES",
+      "languages": [
+        "es-ES",
+        "es",
+        "en"
+      ],
+      "geo": [
+        40.4168,
+        -3.7038
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "tr-ist",
+      "flag": "🇹🇷",
+      "country": "تركيا",
+      "city": "إسطنبول",
+      "tz": "Europe/Istanbul",
+      "locale": "tr-TR",
+      "languages": [
+        "tr-TR",
+        "tr",
+        "en"
+      ],
+      "geo": [
+        41.0082,
+        28.9784
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "ae-dxb",
+      "flag": "🇦🇪",
+      "country": "الإمارات",
+      "city": "دبي",
+      "tz": "Asia/Dubai",
+      "locale": "ar-AE",
+      "languages": [
+        "ar-AE",
+        "ar",
+        "en"
+      ],
+      "geo": [
+        25.2048,
+        55.2708
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "sa-ruh",
+      "flag": "🇸🇦",
+      "country": "السعودية",
+      "city": "الرياض",
+      "tz": "Asia/Riyadh",
+      "locale": "ar-SA",
+      "languages": [
+        "ar-SA",
+        "ar",
+        "en"
+      ],
+      "geo": [
+        24.7136,
+        46.6753
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "eg-cai",
+      "flag": "🇪🇬",
+      "country": "مصر",
+      "city": "القاهرة",
+      "tz": "Africa/Cairo",
+      "locale": "ar-EG",
+      "languages": [
+        "ar-EG",
+        "ar",
+        "en"
+      ],
+      "geo": [
+        30.0444,
+        31.2357
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "id-jkt",
+      "flag": "🇮🇩",
+      "country": "إندونيسيا",
+      "city": "جاكرتا",
+      "tz": "Asia/Jakarta",
+      "locale": "id-ID",
+      "languages": [
+        "id-ID",
+        "id",
+        "en"
+      ],
+      "geo": [
+        -6.2088,
+        106.8456
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "id-sub",
+      "flag": "🇮🇩",
+      "country": "إندونيسيا",
+      "city": "سورابايا",
+      "tz": "Asia/Jakarta",
+      "locale": "id-ID",
+      "languages": [
+        "id-ID",
+        "id"
+      ],
+      "geo": [
+        -7.2575,
+        112.7521
+      ],
+      "ua": "android"
+    },
+    {
+      "id": "in-mum",
+      "flag": "🇮🇳",
+      "country": "الهند",
+      "city": "مومباي",
+      "tz": "Asia/Kolkata",
+      "locale": "en-IN",
+      "languages": [
+        "en-IN",
+        "en",
+        "hi"
+      ],
+      "geo": [
+        19.076,
+        72.8777
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "jp-tyo",
+      "flag": "🇯🇵",
+      "country": "اليابان",
+      "city": "طوكيو",
+      "tz": "Asia/Tokyo",
+      "locale": "ja-JP",
+      "languages": [
+        "ja-JP",
+        "ja",
+        "en"
+      ],
+      "geo": [
+        35.6762,
+        139.6503
+      ],
+      "ua": "mac"
+    },
+    {
+      "id": "kr-sel",
+      "flag": "🇰🇷",
+      "country": "كوريا الجنوبية",
+      "city": "سيول",
+      "tz": "Asia/Seoul",
+      "locale": "ko-KR",
+      "languages": [
+        "ko-KR",
+        "ko",
+        "en"
+      ],
+      "geo": [
+        37.5665,
+        126.978
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "br-sao",
+      "flag": "🇧🇷",
+      "country": "البرازيل",
+      "city": "ساو باولو",
+      "tz": "America/Sao_Paulo",
+      "locale": "pt-BR",
+      "languages": [
+        "pt-BR",
+        "pt",
+        "en"
+      ],
+      "geo": [
+        -23.5505,
+        -46.6333
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "mx-mex",
+      "flag": "🇲🇽",
+      "country": "المكسيك",
+      "city": "مكسيكو سيتي",
+      "tz": "America/Mexico_City",
+      "locale": "es-MX",
+      "languages": [
+        "es-MX",
+        "es",
+        "en"
+      ],
+      "geo": [
+        19.4326,
+        -99.1332
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "au-syd",
+      "flag": "🇦🇺",
+      "country": "أستراليا",
+      "city": "سيدني",
+      "tz": "Australia/Sydney",
+      "locale": "en-AU",
+      "languages": [
+        "en-AU",
+        "en"
+      ],
+      "geo": [
+        -33.8688,
+        151.2093
+      ],
+      "ua": "mac"
+    },
+    {
+      "id": "sg-sin",
+      "flag": "🇸🇬",
+      "country": "سنغافورة",
+      "city": "سنغافورة",
+      "tz": "Asia/Singapore",
+      "locale": "en-SG",
+      "languages": [
+        "en-SG",
+        "en",
+        "zh"
+      ],
+      "geo": [
+        1.3521,
+        103.8198
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "my-kul",
+      "flag": "🇲🇾",
+      "country": "ماليزيا",
+      "city": "كوالالمبور",
+      "tz": "Asia/Kuala_Lumpur",
+      "locale": "ms-MY",
+      "languages": [
+        "ms-MY",
+        "ms",
+        "en"
+      ],
+      "geo": [
+        3.139,
+        101.6869
+      ],
+      "ua": "android"
+    },
+    {
+      "id": "ph-mnl",
+      "flag": "🇵🇭",
+      "country": "الفلبين",
+      "city": "مانيلا",
+      "tz": "Asia/Manila",
+      "locale": "fil-PH",
+      "languages": [
+        "fil-PH",
+        "fil",
+        "en"
+      ],
+      "geo": [
+        14.5995,
+        120.9842
+      ],
+      "ua": "android"
+    },
+    {
+      "id": "ng-los",
+      "flag": "🇳🇬",
+      "country": "نيجيريا",
+      "city": "لاغوس",
+      "tz": "Africa/Lagos",
+      "locale": "en-NG",
+      "languages": [
+        "en-NG",
+        "en"
+      ],
+      "geo": [
+        6.5244,
+        3.3792
+      ],
+      "ua": "android"
+    },
+    {
+      "id": "za-jnb",
+      "flag": "🇿🇦",
+      "country": "جنوب أفريقيا",
+      "city": "جوهانسبرغ",
+      "tz": "Africa/Johannesburg",
+      "locale": "en-ZA",
+      "languages": [
+        "en-ZA",
+        "en"
+      ],
+      "geo": [
+        -26.2041,
+        28.0473
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "pl-waw",
+      "flag": "🇵🇱",
+      "country": "بولندا",
+      "city": "وارسو",
+      "tz": "Europe/Warsaw",
+      "locale": "pl-PL",
+      "languages": [
+        "pl-PL",
+        "pl",
+        "en"
+      ],
+      "geo": [
+        52.2297,
+        21.0122
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "se-sto",
+      "flag": "🇸🇪",
+      "country": "السويد",
+      "city": "ستوكهولم",
+      "tz": "Europe/Stockholm",
+      "locale": "sv-SE",
+      "languages": [
+        "sv-SE",
+        "sv",
+        "en"
+      ],
+      "geo": [
+        59.3293,
+        18.0686
+      ],
+      "ua": "mac"
+    },
+    {
+      "id": "ru-mow",
+      "flag": "🇷🇺",
+      "country": "روسيا",
+      "city": "موسكو",
+      "tz": "Europe/Moscow",
+      "locale": "ru-RU",
+      "languages": [
+        "ru-RU",
+        "ru",
+        "en"
+      ],
+      "geo": [
+        55.7558,
+        37.6173
+      ],
+      "ua": "win"
+    },
+    {
+      "id": "pk-khi",
+      "flag": "🇵🇰",
+      "country": "باكستان",
+      "city": "كراتشي",
+      "tz": "Asia/Karachi",
+      "locale": "ur-PK",
+      "languages": [
+        "ur-PK",
+        "ur",
+        "en"
+      ],
+      "geo": [
+        24.8607,
+        67.0011
+      ],
+      "ua": "android"
+    }
+  ],
+  "PLATFORMS": {
+    "win": {
+      "label": "Windows",
+      "uaPlatform": "Windows NT 10.0; Win64; x64",
+      "chPlatform": "Windows",
+      "chPlatformVersion": "15.0.0",
+      "architecture": "x86",
+      "bitness": "64",
+      "wow64": true,
+      "model": ""
+    },
+    "mac": {
+      "label": "macOS",
+      "uaPlatform": "Macintosh; Intel Mac OS X 10_15_7",
+      "chPlatform": "macOS",
+      "chPlatformVersion": "14.5.0",
+      "architecture": "arm",
+      "bitness": "64",
+      "wow64": false,
+      "model": ""
+    },
+    "android": {
+      "label": "Android",
+      "uaPlatform": "Linux; Android 13; Pixel 7",
+      "chPlatform": "Android",
+      "chPlatformVersion": "13.0.0",
+      "architecture": "arm",
+      "bitness": "64",
+      "wow64": false,
+      "model": "Pixel 7",
+      "mobile": true
+    }
+  },
+  "SCREENS": [
+    [
+      1920,
+      1080,
+      1
+    ],
+    [
+      1536,
+      864,
+      1.25
+    ],
+    [
+      1366,
+      768,
+      1
+    ],
+    [
+      2560,
+      1440,
+      1
+    ],
+    [
+      1440,
+      900,
+      2
+    ],
+    [
+      1728,
+      1117,
+      2
+    ],
+    [
+      390,
+      844,
+      3
+    ],
+    [
+      412,
+      915,
+      2.625
+    ]
+  ]
+}

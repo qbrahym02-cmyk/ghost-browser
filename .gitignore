@@ -1,0 +1,29 @@
+# الاعتماديات
+node_modules/
+
+# نواتج البناء
+release/
+dist/
+out/
+*.exe
+*.dmg
+*.AppImage
+*.deb
+
+# ملفات مؤقتة وسجلات
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# بيئات محلية وأسرار — لا ترفع توكنات أبداً
+.env
+.env.*
+!.env.example
+*.token
+*.secret
+
+# أدوات المحررين
+.idea/
+.vscode/
+*.swp

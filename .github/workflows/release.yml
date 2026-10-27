@@ -1,0 +1,31 @@
+name: Release
+
+# عند دفع وسم v* يُبنى المثبّت تلقائياً ويُنشر Release مع ملفات التحديث
+# (latest.yml) — فكل نسخة مثبّتة لدى المستخدمين تلتقط التحديث تلقائياً.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    name: بناء مثبّت ويندوز
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: تثبيت الاعتماديات
+        run: npm ci
+      - name: فحص الصيغة والاختبارات
+        run: |
+          npm run check
+          npm test
+      - name: بناء ونشر المثبّت
+        run: npx electron-builder --win --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
