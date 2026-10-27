@@ -51,9 +51,5 @@
     "electron": "45.1.0",
     "electron-builder": "^26.18.0",
     "qrcode-generator": "^1.4.4"
-  },
-  "build": {
-    "extends": null,
-    "configFile": "electron-builder.yml"
   }
 }

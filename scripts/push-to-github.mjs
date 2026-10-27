@@ -113,7 +113,7 @@ const injectOwner = (file, patterns) => {
     console.log(`→ حُقن المالك (${user.login}) في ${file}`);
   }
 };
-injectOwner('electron-builder.yml', [/^(\s*owner:\s*)YOUR_GITHUB_USER\b/m, /^(\s*owner:\s*)'[A-Za-z0-9-]+'\s*$/m]);
+injectOwner('electron-builder.yml', [/^(\s*owner:\s*)YOUR_GITHUB_USER\b/m]);
 injectOwner('package.json', [/YOUR_GITHUB_USER/g]);
 
 /* ------------------------------------------------------------ git init + commit */
