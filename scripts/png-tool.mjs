@@ -160,18 +160,16 @@ export function resize(img, w, h) {
 }
 
 /* ------------------------------------------------------------------ ICO */
-/** بناء ملف ICO: BMP (BGRA + AND mask) للأحجام ≤48، وPNG للأكبر. */
+/** بناء ملف ICO: كل المدخلات BMP (BGRA + AND mask) — NSIS/makensis لا يقبل مدخلات PNG. */
 export function buildIco(images) {
   const entries = [];
   let offset = 6 + images.length * 16;
   for (const img of images) {
     let payload;
-    const usePng = img.width > 48;
-    if (usePng) {
-      payload = encodePng(img.width, img.height, img.data);
-    } else {
+    /* كل المدخلات BMP: makensis (مثبّت NSIS) لا يقرأ مدخلات PNG داخل ICO */
+    {
       const header = Buffer.alloc(40);
-      header.writeUInt32BE(40, 0);
+      header.writeUInt32LE(40, 0);
       header.writeInt32LE(img.width, 4);
       header.writeInt32LE(img.height * 2, 8); // XOR + AND
       header.writeUInt16LE(1, 12);
@@ -200,7 +198,7 @@ export function buildIco(images) {
       }
       payload = Buffer.concat([header, xor, and]);
     }
-    entries.push({ img, payload, offset, usePng });
+    entries.push({ img, payload, offset });
     offset += payload.length;
   }
 
@@ -214,10 +212,10 @@ export function buildIco(images) {
     dir[o] = e.img.width >= 256 ? 0 : e.img.width;
     dir[o + 1] = e.img.height >= 256 ? 0 : e.img.height;
     dir[o + 2] = 0; dir[o + 3] = 0;
-    dir.writeUInt16LE(1, 4);
-    dir.writeUInt16LE(32, 6);
-    dir.writeUInt32LE(e.payload.length, 8);
-    dir.writeUInt32LE(e.offset, 12);
+    dir.writeUInt16LE(1, o + 4);
+    dir.writeUInt16LE(32, o + 6);
+    dir.writeUInt32LE(e.payload.length, o + 8);
+    dir.writeUInt32LE(e.offset, o + 12);
   });
   return Buffer.concat([header, dir, ...entries.map((e) => e.payload)]);
 }
