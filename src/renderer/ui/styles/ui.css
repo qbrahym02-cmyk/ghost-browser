@@ -450,6 +450,64 @@ select.field { appearance: none; }
 
 .upstatus { color: var(--muted); font-size: 11.5px; display: flex; align-items: center; gap: 8px; }
 
+/* --------------------------------------------------------- التحديث المدمج */
+/* زر التحديث في الشريط — يظهر فقط عند وجود تحديث */
+.updbtn { position: relative; color: var(--accent); }
+.updbtn[hidden] { display: none; }
+.updbtn.pulse { animation: updpulse 1.6s ease-in-out infinite; }
+.updbtn.done { color: var(--ok); }
+@keyframes updpulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(55, 226, 213, 0.45); }
+  50% { box-shadow: 0 0 0 6px rgba(55, 226, 213, 0); transform: rotate(40deg); }
+}
+.updbadge {
+  position: absolute; top: -1px; inset-inline-end: -1px;
+  min-width: 13px; height: 13px; padding: 0 3px; border-radius: 99px;
+  background: var(--accent); color: #04131a; font-size: 9px; font-weight: 700;
+  display: grid; place-items: center; box-shadow: 0 2px 8px rgba(55, 226, 213, 0.5);
+}
+.updbtn.done .updbadge { background: var(--ok); box-shadow: 0 2px 8px rgba(92, 228, 155, 0.5); }
+
+/* بطاقة حالة التحديث داخل اللوحة */
+.upcard {
+  display: flex; flex-direction: column; gap: 10px; padding: 13px 14px; border-radius: 14px;
+  background: var(--glass); border: 1px solid var(--stroke-soft);
+  animation: tab-in 0.25s var(--spring);
+}
+.upcard.ok { border-color: rgba(92, 228, 155, 0.4); box-shadow: 0 0 22px rgba(92, 228, 155, 0.08) inset; }
+.upcard.bad { border-color: rgba(255, 92, 122, 0.4); }
+.uprow { display: flex; align-items: center; gap: 12px; }
+.upmark { font-size: 24px; filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4)); }
+.upstate { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.upstate b { font-size: 13px; }
+.upcard.ok .upstate b { color: var(--ok); }
+.upcard.bad .upstate b { color: var(--danger); }
+.upstate span { color: var(--faint); font-size: 10.5px; }
+
+/* شريط تقدم التنزيل متدرج متحرك */
+.upprogress { height: 7px; border-radius: 99px; background: var(--bg-2); overflow: hidden; border: 1px solid var(--stroke-soft); }
+.upprogress-fill {
+  height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  background-size: 200% 100%;
+  animation: updflow 1.4s linear infinite;
+  transition: width 0.3s ease;
+}
+@keyframes updflow { to { background-position: -200% 0; } }
+
+.upnotes {
+  font-size: 11px; color: var(--muted); line-height: 1.7; white-space: pre-line;
+  max-height: 130px; overflow-y: auto; padding: 9px 11px; border-radius: 10px;
+  background: var(--bg-2); border: 1px solid var(--stroke-soft);
+}
+
+/* زر التثبيت النهائي المتوهج */
+.btn.primary.glow { animation: instglow 1.8s ease-in-out infinite; }
+@keyframes instglow {
+  0%, 100% { box-shadow: 0 6px 18px rgba(124, 92, 255, 0.35); }
+  50% { box-shadow: 0 6px 30px rgba(92, 228, 155, 0.55); }
+}
+
 .aboutmark { font-size: 44px; text-align: center; filter: drop-shadow(0 0 22px rgba(124, 92, 255, 0.9)); animation: float 4s ease-in-out infinite; }
 @keyframes float { 50% { transform: translateY(-6px); } }
 .panel.about h1 { margin: 4px 0 0; text-align: center; font-size: 20px; background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }

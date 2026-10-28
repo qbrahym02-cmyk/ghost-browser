@@ -28,6 +28,10 @@ export function mountChrome(root) {
   const btnStar = h('button', { class: 'iconbtn', title: t('nav.bookmark'), onclick: () => action('bookmark:add', {}) }, svg(ICONS.star, 15));
   const btnQr = h('button', { class: 'iconbtn', title: t('nav.qr'), onclick: () => action('ui:overlay-push', { kind: 'qr', params: { url: activeTab(store.state)?.url } }) }, svg(ICONS.qr, 15));
   const btnMenu = h('button', { class: 'iconbtn', title: t('nav.menu'), onclick: () => action('ui:overlay-push', { kind: 'menu' }) }, svg(ICONS.menu, 16));
+  /* زر التحديث: يظهر فقط عند توفر تحديث أو أثناء/بعد التنزيل */
+  const btnUpdate = h('button', { class: 'iconbtn updbtn', title: t('update.panel'), onclick: () => action('ui:overlay-push', { kind: 'update' }) });
+  btnUpdate.hidden = true;
+  btnUpdate.append(svg(ICONS.reload, 15), h('span', { class: 'updbadge', text: '!' }));
 
   const address = h('input', { class: 'address', type: 'text', spellcheck: 'false', placeholder: t('address.placeholder') });
   const chip = el('button', 'idchip');
@@ -35,7 +39,7 @@ export function mountChrome(root) {
   addressWrap.append(btnShield, address, chip, btnStar, btnQr);
 
   const navbar = el('div', 'navbar');
-  navbar.append(btnBack, btnFwd, btnReload, btnTranslate, addressWrap, btnSplit, btnMenu);
+  navbar.append(btnBack, btnFwd, btnReload, btnTranslate, addressWrap, btnSplit, btnUpdate, btnMenu);
 
   const findInput = h('input', { class: 'findinput', type: 'text', placeholder: t('find.placeholder') });
   const findBar = el('div', 'findbar');
@@ -82,6 +86,7 @@ export function mountChrome(root) {
     if (type === 'open-settings') action('ui:overlay-push', { kind: 'settings' });
     if (type === 'open-palette') action('ui:overlay-push', { kind: 'palette' });
     if (type === 'open-about') action('ui:overlay-push', { kind: 'about' });
+    if (type === 'open-update') action('ui:overlay-push', { kind: 'update' });
     if (type === 'open-bundle-save') action('ui:overlay-push', { kind: 'bundle-save' });
     if (type === 'open-qr') {
       const url = payload?.url || activeTab(store.state)?.url;
@@ -176,6 +181,15 @@ export function mountChrome(root) {
     btnSplit.classList.toggle('on', splitOn);
     btnSplit.title = splitOn ? t('tab.splitOff') : t('tab.split');
     btnQr.disabled = !translatable;
+    /* زر التحديث: يظهر عند توفر تحديث/أثناء التنزيل/جاهز للتثبيت */
+    const u = state.update || {};
+    const updActive = ['available', 'downloading', 'downloaded'].includes(u.status);
+    btnUpdate.hidden = !updActive;
+    btnUpdate.classList.toggle('pulse', u.status === 'available');
+    btnUpdate.classList.toggle('done', u.status === 'downloaded');
+    btnUpdate.title = u.status === 'downloaded'
+      ? `${t('update.install')} (v${u.version})` : u.status === 'downloading'
+        ? `${t('update.downloading')} ${u.progress || 0}%` : t('update.panel');
     if (document.activeElement !== address) syncAddress(true);
     renderChip(state);
   }

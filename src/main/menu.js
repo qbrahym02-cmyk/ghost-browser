@@ -87,7 +87,7 @@ function install(deps) {
         label: t('menu.help'),
         submenu: [
           { label: t('menu.about'), click: () => send('open-about', {}) },
-          { label: t('menu.checkUpdate'), click: () => deps.updater.check() },
+          { label: t('menu.checkUpdate'), click: () => { deps.updater.check(); send('open-update', {}); } },
           { type: 'separator' },
           {
             label: t('menu.openLogs'),

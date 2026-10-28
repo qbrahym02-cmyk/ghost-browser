@@ -82,6 +82,7 @@ const AR = {
   'update.latest': 'أنت على أحدث إصدار ✓',
   'update.ready': 'التحديث {version} جاهز — أعد التشغيل للتثبيت',
   'update.onlyPackaged': 'التحديث التلقائي يعمل في النسخة المثبّتة فقط',
+  'update.availableToast': 'تحديث جديد متاح: {version} — نزّله من لوحة التحديث',
 };
 
 const EN = {
@@ -164,6 +165,7 @@ const EN = {
   'update.latest': 'You are on the latest version ✓',
   'update.ready': 'Update {version} ready — restart to install',
   'update.onlyPackaged': 'Auto-update works in installed builds only',
+  'update.availableToast': 'New update available: {version} — get it from the Update panel',
 };
 
 const DICTS = { ar: AR, en: EN };

@@ -38,7 +38,7 @@ class TabManager {
 
   /* ------------------------------------------------------------- إنشاء */
   create(opts = {}) {
-    const { groupId, url, mode, index, activate = true, background = false, rotate } = opts;
+    const { groupId, url, mode, index, activate = true, background = false, rotate, restoredIdentity, restored } = opts;
     const s = this.state.state;
     if (this.tabs.size >= LIMITS.MAX_TABS) {
       this.state.sendEvent('toast', { kind: 'warn', text: this.t('tabs.max') });
@@ -49,12 +49,17 @@ class TabManager {
     const id = (opts && opts.id && !this.tabs.has(opts.id)) ? opts.id : uid();
 
     let identity = group.identity;
-    const shouldRotate = rotate || (tabMode === TAB_MODES.GHOST && s.settings.rotateIdentityPerGhostTab);
-    if (shouldRotate) {
+    /* تاب مستعاد من جلسة سابقة: لا تدوير — إما هويته المحفوظة أو هوية القروب */
+    const isRestored = restored === true || !!(restoredIdentity && restoredIdentity.timezone);
+    const shouldRotate = !isRestored && (rotate || (tabMode === TAB_MODES.GHOST && s.settings.rotateIdentityPerGhostTab));
+    if (restoredIdentity && restoredIdentity.timezone) {
+      identity = restoredIdentity;
+    } else if (shouldRotate) {
       const pool = (s.settings.countryPool && s.settings.countryPool.length) ? s.settings.countryPool : Object.keys(require('../common/countries').PRESETS);
       const presetId = pool[Math.floor(Math.random() * pool.length)];
       identity = buildIdentity({ presetId, seedString: id });
     }
+    const rotated = !!(restoredIdentity && restoredIdentity.timezone) || shouldRotate;
 
     const ses = this.sessions.acquire({ id, mode: tabMode }, group);
     const view = new WebContentsView({
@@ -81,6 +86,7 @@ class TabManager {
       partition: this.sessions.partitionFor({ id, mode: tabMode }, group),
       view,
       identity,
+      rotated,
       url: url || this.settings().newTabUrl || URLS.NEW_TAB,
       title: this.t('tabs.newTab'),
       favicons: [],
@@ -524,21 +530,37 @@ class TabManager {
   }
 
   /* ------------------------------------------------------------- استعادة/حفظ */
+  /**
+   * حفظ لقطة الجلسة: كل التابات (شبح/محفوظ/مشترك) مع هوياتها حتى تُستعاد
+   * بعد إغلاق المتصفح بكامل بياناتها — جلساتها كلها persistent على القرص.
+   */
   saveSession() {
     const snapshot = this.order
       .map((id) => this.tabs.get(id))
-      .filter((t) => t && t.mode !== TAB_MODES.GHOST)
-      .map((t) => ({ id: t.id, groupId: t.groupId, mode: t.mode, url: t.url, title: t.title, partition: t.partition }));
+      .filter(Boolean)
+      .map((t) => ({
+        id: t.id, groupId: t.groupId, mode: t.mode, url: t.url, title: t.title,
+        partition: t.partition, frozen: !!t.frozen,
+        identity: t.rotated ? t.identity : null, /* هووية التاب المدوّرة فقط */
+      }));
     this.store.set('lastSession', { tabs: snapshot, activeId: this.activeTabId, at: Date.now() });
   }
 
+  /**
+   * استعادة الجلسة السابقة: كل التابات بوضعها وهوية تابها المدوّرة.
+   * جلسات الشبح persistent فتُستعاد بياناتها (كوكيز/تخزين) من القرص.
+   */
   restoreSession() {
     const snap = this.store.get('lastSession', null);
     if (!snap || !this.settings().restoreSession) return 0;
     let n = 0;
     for (const t of snap.tabs || []) {
       if (!this.groups.get(t.groupId)) continue;
-      const tab = this.create({ id: t.id, groupId: t.groupId, mode: t.mode, url: t.url, activate: false });
+      const tab = this.create({
+        id: t.id, groupId: t.groupId, mode: t.mode, url: t.url,
+        activate: false, restored: true,
+        restoredIdentity: t.identity || null,
+      });
       if (tab) n++;
     }
     if (snap.activeId && this.get(snap.activeId)) this.activate(snap.activeId);

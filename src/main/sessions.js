@@ -1,7 +1,9 @@
 /**
  * إدارة الجلسات (sessions/partitions):
- *  - ghost  : جلسة ذاكرة فقط لكل تاب (جهاز جديد في كل مرة).
- *  - keep   : جلسة محفوظة لكل تاب على القرص.
+ *  - ghost  : جلسة معزولة لكل تاب — تُحفظ على القرص وتُستعاد بعد إعادة التشغيل
+ *            (محبوب المستخدمين: «حتى لو خرجت التابات لا تفقد بياناتها»)،
+ *            وتبقى قابلة للمسح الفوري عند إغلاق التاب الشبح.)
+ *  - keep   : جلسة محفوظة لكل تاب على القرص (لا تُمسح أبداً عند الإغلاق).
  *  - shared : جلسة القروب المشتركة.
  * تطبّق على كل جلسة: UA + Accept-Language، ترويسات client-hints وDNT/GPC،
  * البروكسي، صلاحيات المواقع، ومانع الإعلانات.
@@ -23,15 +25,15 @@ class SessionManager {
   partitionFor(tab, group) {
     if (tab.mode === TAB_MODES.SHARED) return PARTITION.shared(group.id);
     if (tab.mode === TAB_MODES.KEEP) return PARTITION.keep(tab.id);
-    return PARTITION.ghost(tab.id);
+    /* جلسة الشبح الآن تُحفظ أيضاً — استمرارية الجلسة عبر إعادة التشغيل */
+    return PARTITION.ghostPersist(tab.id);
   }
 
   /** إنشاء/استرجاع جلسة تاب وتكوينها بالكامل. */
   acquire(tab, group) {
     const partition = this.partitionFor(tab, group);
     if (this.registry.has(partition)) return this.registry.get(partition).ses;
-    const ephemeral = tab.mode === TAB_MODES.GHOST;
-    const ses = session.fromPartition(partition, { cache: ephemeral ? 'memory' : 'default' });
+    const ses = session.fromPartition(partition, { cache: 'default' });
     this.registry.set(partition, { ses, groupId: group.id, mode: tab.mode });
     this.configure(ses, group);
     return ses;
@@ -139,7 +141,7 @@ class SessionManager {
     for (const { ses } of this.forGroup(group.id)) this.configure(ses, group);
   }
 
-  /** تحرير جلسة تاب شبح: مسح كامل لكل أثر. */
+  /** تحرير جلسة تاب شبح: مسح كامل لكل أثر فور إغلاق التاب. */
   async releaseGhost(partition) {
     const rec = this.registry.get(partition);
     if (!rec || rec.mode !== TAB_MODES.GHOST) return;
@@ -158,7 +160,7 @@ class SessionManager {
       const keep = new Set(livePartitions.map((p) => p.replace(/^persist:/, '')));
       const removed = [];
       for (const name of fs.readdirSync(dir)) {
-        if (!name.startsWith('ghost-tab-')) continue;
+        if (!name.startsWith('ghost-tab-') && !name.startsWith('ghost-gtab-')) continue;
         if (keep.has(name)) continue;
         // نتخلص من جلسات التابات المحفوظة القديمة فقط بعد 30 يوماً
         const st = fs.statSync(path.join(dir, name));

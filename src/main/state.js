@@ -24,7 +24,7 @@ class AppState {
         splitTabId: null,
       },
       downloads: [],
-      update: { status: 'idle', version: null, progress: null, error: null },
+      update: { status: 'idle', version: null, progress: null, error: null, notes: null, currentVersion: null },
       adblock: { engine: null, lists: [], updating: false, lastUpdate: null, error: null },
       stats: { blockedTotal: 0, blockedSession: 0 },
       sessionBundles: [],

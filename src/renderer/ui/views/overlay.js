@@ -70,7 +70,7 @@ function palettePanel(state) {
       { label: t('palette.leaktest'), run: () => action('open:leaktest', {}) },
       { label: t('palette.panic'), run: () => action('panic', {}) },
       { label: t('palette.immersive'), run: () => action('ui:immersive', {}) },
-      { label: t('palette.checkUpdate'), run: () => action('update:check', {}) },
+      { label: t('palette.checkUpdate'), run: () => action('ui:overlay-push', { kind: 'update' }) },
       { label: `🛡 ${t('vpn.title')}`, run: () => action('ui:overlay-push', { kind: 'vpn' }) },
       { label: t('palette.adblockUpdate'), run: () => action('adblock:update-lists', {}) },
     ];
@@ -136,8 +136,76 @@ function updateStatusLine(state) {
     latest: t('update.latest'), unsupported: t('update.unsupported'), error: u.error || t('update.status.error'),
   };
   const span = h('span', { class: 'upstatus', text: map[u.status] || '—' });
-  if (u.status === 'downloaded') span.append(btn(t('update.install'), () => action('update:install', {}), 'btn primary'));
+  if (u.status === 'available') span.append(btn(t('update.download'), () => action('update:download', {}), 'btn primary tiny'));
+  if (u.status === 'downloaded') span.append(btn(t('update.install'), () => action('update:install', {}), 'btn primary tiny'));
   return span;
+}
+
+/* ------------------------------------------------------------ لوحة التحديث المدمج */
+function updatePanel(state) {
+  const u = state.update || {};
+  const cur = u.currentVersion || '1.0.0';
+  const s = state.settings;
+  const up = (patch) => action('settings:update', { patch });
+
+  const statusMap = {
+    idle: t('update.status.idle'),
+    checking: t('update.checking'),
+    available: t('update.available'),
+    downloading: t('update.downloading'),
+    downloaded: t('update.ready'),
+    latest: t('update.latest'),
+    unsupported: t('update.unsupported'),
+    error: u.error || t('update.status.error'),
+  };
+  const kind = u.status === 'downloaded' || u.status === 'available' || u.status === 'downloading' ? 'ok'
+    : u.status === 'error' ? 'bad' : '';
+
+  /* بطاقة الحالة الحية */
+  const card = el('div', 'upcard' + (kind ? ' ' + kind : ''));
+  card.append(h('div', { class: 'uprow' },
+    h('span', { class: 'upmark', text: u.status === 'downloaded' ? '✅' : u.status === 'downloading' ? '⬇️' : u.status === 'available' ? '🎁' : u.status === 'latest' ? '✨' : u.status === 'error' ? '⚠️' : '👻' }),
+    h('div', { class: 'upstate' },
+      h('b', { text: statusMap[u.status] || '—' }),
+      h('span', { class: 'mono', text: u.version && u.status !== 'latest' ? `${cur} → ${u.version}` : `v${cur}` }))));
+
+  /* شريط تقدم التنزيل */
+  if (u.status === 'downloading') {
+    const bar = el('div', 'upprogress');
+    const fill = el('div', 'upprogress-fill');
+    fill.style.width = `${Math.max(2, u.progress || 0)}%`;
+    bar.append(fill);
+    card.append(bar);
+  }
+
+  /* ملاحظات الإصدار */
+  if (u.notes && u.notes.body && (u.status === 'available' || u.status === 'downloaded')) {
+    card.append(h('div', { class: 'upnotes', text: u.notes.body.slice(0, 400) }));
+  }
+
+  /* أزرار حسب الحالة */
+  const actions = el('div', 'rowbtns');
+  if (u.status === 'available') {
+    actions.append(btn(`${t('update.download')} (v${u.version})`, () => action('update:download', {}), 'btn primary'));
+  } else if (u.status === 'downloading') {
+    const b = btn(`${t('update.downloading')} ${u.progress || 0}%`, () => {}, 'btn');
+    b.disabled = true;
+    actions.append(b);
+  } else if (u.status === 'downloaded') {
+    actions.append(btn(`${t('update.install')} (v${u.version})`, () => action('update:install', {}), 'btn primary glow'));
+  } else if (u.status !== 'checking') {
+    actions.append(btn(t('settings.checkNow'), () => action('update:check', {}), 'btn primary'));
+  }
+
+  return panel('update', `🔄 ${t('update.panel')}`,
+    card,
+    actions,
+    h('h3', { text: t('settings.update') }),
+    row(t('settings.updateAuto'), toggle(s.update?.auto !== false, (v) => up({ update: { auto: v } }))),
+    row(t('settings.updateAutoDownload'), toggle(!!s.update?.autoDownload, (v) => up({ update: { autoDownload: v } }))),
+    row(t('settings.channel'), select([['latest', 'latest'], ['beta', 'beta']], s.update?.channel || 'latest', (v) => up({ update: { channel: v } }))),
+    h('p', { class: 'fineprint', text: t('update.panelHint') }),
+  );
 }
 
 /* ------------------------------------------------------ حالة الـ IP للقروب */
@@ -389,6 +457,7 @@ function menuPanel(state) {
     http ? item(t('nav.qr'), () => action('ui:overlay-push', { kind: 'qr', params: { url: tab.url } }), '📱') : null,
     item(t('overlay.downloads'), () => action('ui:overlay-push', { kind: 'downloads' }), '⬇️'),
     item(t('vpn.title'), () => action('ui:overlay-push', { kind: 'vpn' }), '🛡'),
+    item(t('update.panel'), () => action('ui:overlay-push', { kind: 'update' }), '🔄'),
     item(t('overlay.bookmarks'), () => action('ui:overlay-push', { kind: 'bookmarks' }), '⭐'),
     item(t('overlay.cookies'), () => action('ui:overlay-push', { kind: 'cookies' }), '🍪'),
     item(t('overlay.bundles'), () => action('ui:overlay-push', { kind: 'bundles' }), '🗂'),
@@ -515,6 +584,7 @@ export function mountOverlay(root) {
       case 'menu': panelEl = menuPanel(state); break;
       case 'about': panelEl = aboutPanel(state); break;
       case 'vpn': panelEl = vpnPanel(state); break;
+      case 'update': panelEl = updatePanel(state); break;
       default: panelEl = panel('unknown', top.kind);
     }
     backdrop.append(panelEl);

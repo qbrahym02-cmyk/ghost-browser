@@ -160,7 +160,11 @@ app.whenReady().then(async () => {
 
   tabsRef = tabs;
 
-  /* التحديث عن بُعد */
+  /* التحديث عن بُعد — مع خطاف حفظ الجلسة قبل إعادة تشغيل التثبيت
+     (يُحفظ على كائن AppState لا داخل الحالة — الحالة تُبث عبر IPC ولا تقبل دوالاً) */
+  state.saveSessionHook = () => {
+    try { tabs.saveSession(); store.saveNow(); } catch { /* تجاهل */ }
+  };
   const upd = updater.init({ state, store });
 
   /* الأوامر والقائمة */
@@ -238,6 +242,18 @@ app.whenReady().then(async () => {
         const { translateUrl } = require('../common/translate');
         const tr = translateUrl('https://example.com/page?a=1', 'ar');
         check('رابط الترجمة يُبنى عبر translate.goog', !!tr && tr.includes('.translate.goog'), tr || '');
+
+        /* استمرارية الجلسة: جلسة الشبح persistent + حفظ كل التابات في اللقطة */
+        const ghostPart = a.partition;
+        check('جلسة الشبح تُحفظ على القرص (persistent)', ghostPart.startsWith('persist:'), ghostPart);
+        tabs.saveSession();
+        const snap = store.get('lastSession', null);
+        const snapIds = (snap?.tabs || []).map((x) => x.id);
+        check('لقطة الجلسة تشمل كل التابات (أشباحاً ومشتركة)', snapIds.includes(a.id) && snapIds.includes(sharedA.id), `n=${snapIds.length}`);
+
+        /* لوحة التحديث: الحالة بُثّت مع الإصدار الحالي */
+        const upState = state.state.update;
+        check('حالة التحديث متاحة للواجهة مع رقم الإصدار', !!upState && typeof upState.status === 'string' && typeof upState.currentVersion === 'string', `status=${upState?.status} v=${upState?.currentVersion}`);
 
         /* ملاحظات القروب تُحفظ */
         groups.update(g.id, { notes: 'ghost-smoke' });

@@ -9,12 +9,17 @@ module.exports = {
     HOME: 'ghost://newtab/',
   },
   /** أوضاع جلسة التاب:
-   *  ghost  — جهاز جديد تماماً لكل تاب، يُمحى عند الإغلاق (الافتراضي).
-   *  keep   — جهاز خاص بالتاب يُحفظ على القرص ويبقى بعد إعادة التشغيل.
+   *  ghost  — جهاز جديد لكل تاب بجلسة معزولة تُحفظ على القرص،
+   *           تُستعاد بعد إعادة التشغيل وتمسح عند إغلاق التاب (الافتراضي).
+   *  keep   — جهاز خاص بالتاب يُحفظ على القرص ولا يُمسح عند إغلاقه.
    *  shared — كل تابات القروب تتشارك جلسة واحدة (مثل متصفح عادي). */
   TAB_MODES: { GHOST: 'ghost', KEEP: 'keep', SHARED: 'shared' },
   PARTITION: {
-    ghost: (tabId) => `ghost-tab-${tabId}`,
+    /* جلسات الشبح الآن persistent أيضاً — البيانات تبقى بعد إعادة التشغيل
+       (مطلب المستخدم) وتمسح فوراً عند إغلاق التاب عبر releaseGhost.
+       بادئة gtab خاصة بالأشباح حتى لا تتصادم مع جلسات keep القديمة. */
+    ghost: (tabId) => `persist:ghost-gtab-${tabId}`,
+    ghostPersist: (tabId) => `persist:ghost-gtab-${tabId}`,
     keep: (tabId) => `persist:ghost-tab-${tabId}`,
     shared: (groupId) => `persist:ghost-group-${groupId}`,
   },
