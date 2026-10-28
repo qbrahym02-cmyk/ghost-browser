@@ -3,8 +3,9 @@
  * تتضمن أدوار تحرير كاملة كي يعمل نسخ/لصق في كل الصفحات.
  * تُعاد البناء عند تغيير لغة الواجهة.
  */
-const { Menu, app } = require('electron');
+const { Menu, app, shell } = require('electron');
 const { makeT } = require('../common/strings');
+const boot = require('./boot-guard');
 
 function install(deps) {
   const { state, tabs, layout, win: wm } = deps;
@@ -87,6 +88,20 @@ function install(deps) {
         submenu: [
           { label: t('menu.about'), click: () => send('open-about', {}) },
           { label: t('menu.checkUpdate'), click: () => deps.updater.check() },
+          { type: 'separator' },
+          {
+            label: t('menu.openLogs'),
+            click: () => {
+              try { shell.showItemInFolder(boot.logFile()); } catch { /* تجاهل */ }
+            },
+          },
+          {
+            label: t('menu.safeMode'),
+            click: () => {
+              app.relaunch({ args: [...process.argv.slice(1), '--safe'] });
+              app.exit(0);
+            },
+          },
         ],
       },
     ];

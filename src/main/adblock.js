@@ -73,7 +73,7 @@ class AdBlock {
   }
 
   async init() {
-    fs.mkdirSync(this.filtersDir, { recursive: true });
+    try { fs.mkdirSync(this.filtersDir, { recursive: true }); } catch { /* تجاهل */ }
     try {
       const CountingBlocker = loadEngine();
       const text = this.#combinedLists(this.#enabledKinds());

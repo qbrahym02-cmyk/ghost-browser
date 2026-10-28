@@ -1,7 +1,7 @@
 {
   "name": "ghost-browser",
   "productName": "Ghost Browser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Ghost — متصفح خفيف يعامل كل تاب كجهاز مستقل: جلسات معزولة، قروبات ببصمات ودول وتوقيتات مختلفة، مانع إعلانات مدمج، وتحديث تلقائي عن بُعد.",
   "descriptionEn": "A lightweight multi-identity browser: every tab is an isolated device, groups carry their own cookies, timezone, locale, fingerprint and proxy — with built-in ad blocking and auto-updates.",
   "main": "src/main/index.js",
@@ -31,7 +31,7 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
-    "test": "node --test tests/",
+    "test": "node scripts/run-tests.mjs",
     "check": "node scripts/check-syntax.mjs",
     "icons": "node scripts/make-icons.mjs",
     "smoke": "node scripts/smoke.mjs",

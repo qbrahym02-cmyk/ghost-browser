@@ -1,9 +1,12 @@
 /**
  * نقطة الإقلاع — Ghost Browser.
- * الترتيب مهم: تسجيل البروتوكول قبل ready، ثم المتاجر، المحرك، النافذة، الاستعادة.
+ * الترتيب مهم: حارس الإقلاع أولاً، ثم قفل النسخة، تسجيل البروتوكول قبل ready،
+ * ثم المتاجر، المحرك، النافذة، الاستعادة.
  */
 const path = require('node:path');
 const { app } = require('electron');
+const boot = require('./boot-guard');
+boot.install();
 const { AppState } = require('./state');
 const { Store } = require('./store');
 const { AdBlock } = require('./adblock');
@@ -30,6 +33,7 @@ if (!app.requestSingleInstanceLock()) {
   app.quit();
   process.exit(0);
 }
+boot.arm(); /* علامة إقلاع قيد التنفيذ — تُحذف عند نجاح الإقلاع فقط */
 
 protocol.registerSchemes();
 
@@ -55,13 +59,22 @@ const DEFAULT_SETTINGS = {
 let ctx = null;
 
 app.on('second-instance', () => {
-  if (ctx?.wm.win) {
+  if (ctx?.wm?.win) {
     if (ctx.wm.win.isMinimized()) ctx.wm.win.restore();
     ctx.wm.win.focus();
+  } else {
+    /* لا نافذة (إقلاع سابق تالف) — أعد تشغيل نفسك بدل التجاهل الصامت */
+    boot.log('second-instance: لا نافذة — إعادة تشغيل ذاتي');
+    app.relaunch({ args: process.argv.slice(1) });
+    app.exit(0);
   }
 });
 
 app.whenReady().then(async () => {
+  try {
+  /* إذا لم يكتمل الإقلاع السابق → حوار الوضع الآمن (قد يعيد التشغيل) */
+  if (!boot.checkPreviousFailure()) return;
+
   const store = new Store(path.join(app.getPath('userData'), 'ghost-store.json'), {
     settings: DEFAULT_SETTINGS,
     groups: [],
@@ -83,6 +96,7 @@ app.whenReady().then(async () => {
 
   app.setAppUserModelId('app.ghost.browser');
   app.setName('Ghost Browser');
+  boot.step('boot:store-ok');
 
   /* مانع الإعلانات */
   const adblock = new AdBlock({
@@ -92,6 +106,7 @@ app.whenReady().then(async () => {
     filtersDir: path.join(app.getPath('userData'), 'filters'),
   });
   await adblock.init();
+  boot.step('boot:adblock-ok engine=' + adblock.engine);
 
   /* الجلسات والقروبات */
   const sessions = new SessionManager({
@@ -109,6 +124,8 @@ app.whenReady().then(async () => {
   /* النافذة */
   const wm = new WindowManager({ state, store });
   wm.create();
+  boot.step('boot:window-created');
+  boot.bootOk(); /* من الآن: أخطاء التشغيل تُسجَّل ولا تقتل التطبيق */
 
   /* الهوية والتابات */
   const applier = new IdentityApplier();
@@ -152,8 +169,9 @@ app.whenReady().then(async () => {
   ipc.install(deps);
   deps.menu = menu.install(deps);
 
-  /* تنظيف الجلسات اليتيمة + استعادة الجلسة */
-  const restored = tabs.restoreSession();
+  /* تنظيف الجلسات اليتيمة + استعادة الجلسة (الوضع الآمن يبدأ جلسة نظيفة) */
+  const restored = boot.isSafe() ? null : tabs.restoreSession();
+  boot.step('boot:session-restored=' + !!restored);
   if (!restored || !tabs.active()) {
     tabs.create({ url: URLS.NEW_TAB });
   }
@@ -161,6 +179,7 @@ app.whenReady().then(async () => {
   tabs.startMemorySaver();
 
   state.patch('ready', true);
+  boot.step('boot:ready');
   ctx = { state, store, tabs, groups, sessions, wm, adblock, upd };
 
   /* وضع الفحص الآلي: سيناريو عزل كامل + تحقق من حقن الهوية ثم خروج. */
@@ -240,6 +259,9 @@ app.whenReady().then(async () => {
   }
 
   if (isDev) console.log('[ghost] وضع التطوير — التحديث التلقائي معطّل');
+  } catch (err) {
+    boot.fail(err);
+  }
 });
 
 app.on('window-all-closed', () => {

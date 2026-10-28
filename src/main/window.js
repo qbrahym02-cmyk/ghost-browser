@@ -6,6 +6,7 @@
 const path = require('node:path');
 const { BrowserWindow, WebContentsView, screen } = require('electron');
 const { CHROME_H, SIDEBAR_W, SIDEBAR_W_COLLAPSED } = require('../common/constants');
+const boot = require('./boot-guard');
 
 class WindowManager {
   constructor({ state, store }) {
@@ -76,11 +77,31 @@ class WindowManager {
     this.chrome.webContents.loadURL(`${base}?view=chrome`);
     this.overlay.webContents.loadURL(`${base}?view=overlay`);
 
+    /* تشخيص: سجّل فشل تحميل أو انهيار أي طبقة واجهة — يكشف سبب الشاشة الفارغة */
+    for (const [name, view] of [['sidebar', this.sidebar], ['chrome', this.chrome], ['overlay', this.overlay]]) {
+      view.webContents.once('did-fail-load', (_e, code, desc, url) => boot.log(`ui-fail-load ${name} code=${code} desc=${desc} url=${url}`));
+      view.webContents.on('render-process-gone', (_e, details) => boot.log(`ui-render-gone ${name} reason=${details?.reason}`));
+    }
+
     this.state.attach(this.sidebar.webContents);
     this.state.attach(this.chrome.webContents);
     this.state.attach(this.overlay.webContents);
 
-    this.win.once('ready-to-show', () => this.win.show());
+    /* إظهار قسري احتياطي: ready-to-show قد لا يُطلق أبداً على بعض مشغلات GPU
+       التالفة — بدونه تبقى العملية خفية بلا نافذة ويتعطل أي تشغيل لاحق
+       بسبب قفل النسخة الواحدة (وهذا سبب «الأيقونة لا تعمل»). */
+    const forceShow = setTimeout(() => {
+      try {
+        if (this.win && !this.win.isDestroyed() && !this.win.isVisible()) {
+          boot.log('window:force-show (ready-to-show لم يصل خلال 4 ثوان)');
+          this.win.show();
+        }
+      } catch { /* تجاهل */ }
+    }, 4000);
+
+    this.win.once('ready-to-show', () => { clearTimeout(forceShow); this.win.show(); });
+    this.win.once('show', () => boot.step('boot:window-shown'));
+    this.win.once('closed', () => clearTimeout(forceShow));
     this.win.on('resize', () => this.layout());
     this.win.on('maximize', () => this.layout());
     this.win.on('unmaximize', () => this.layout());
