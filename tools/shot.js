@@ -70,6 +70,7 @@ app.whenReady().then(async () => {
   await shot('chrome', 'shot://index.html?view=chrome', [1180, 92]);
   await shot('sidebar', 'shot://index.html?view=sidebar', [268, 760]);
   await shot('overlay', 'shot://index.html?view=overlay&mock-overlay=group', [900, 780]);
+  await shot('vpn', 'shot://index.html?view=overlay&mock-overlay=vpn', [700, 700]);
   await shot('settings', 'shot://index.html?view=overlay&mock-overlay=settings', [760, 700]);
   await shot('qr', 'shot://index.html?view=overlay&mock-overlay=qr', [560, 620]);
   await shot('newtab', 'shot://ui/pages/newtab.html', [900, 760]);

@@ -15,6 +15,7 @@ const { GroupManager } = require('./groups');
 const { TabManager } = require('./tabs');
 const { WindowManager } = require('./window');
 const { IdentityApplier } = require('./identity/cdp');
+const { FreeVpn } = require('./freevpn');
 const protocol = require('./protocol');
 const ipc = require('./ipc');
 const menu = require('./menu');
@@ -127,6 +128,10 @@ app.whenReady().then(async () => {
   boot.step('boot:window-created');
   boot.bootOk(); /* من الآن: أخطاء التشغيل تُسجَّل ولا تقتل التطبيق */
 
+  /* VPN المجاني: بروكسيات عامة مُختبَرة تُسحب عند أول فتح للوحة */
+  const freevpn = new FreeVpn({ userDataDir: app.getPath('userData'), netLog: boot.log });
+  state.state.vpn = { nodes: [], testing: false, at: 0, error: null };
+
   /* الهوية والتابات */
   const applier = new IdentityApplier();
   const tabs = new TabManager({ state, store, sessions, groups, applier, layout: wm, adblock });
@@ -159,7 +164,7 @@ app.whenReady().then(async () => {
   const upd = updater.init({ state, store });
 
   /* الأوامر والقائمة */
-  const deps = { state, store, tabs, groups, sessions, adblock, layout: wm, updater: upd, win: wm };
+  const deps = { state, store, tabs, groups, sessions, adblock, layout: wm, updater: upd, win: wm, freevpn };
   deps.ipcPanic = () => {
     const ghosts = [...tabs.tabs.values()].filter((t) => t.mode === TAB_MODES.GHOST);
     for (const t of ghosts) tabs.close(t.id);
@@ -180,7 +185,7 @@ app.whenReady().then(async () => {
 
   state.patch('ready', true);
   boot.step('boot:ready');
-  ctx = { state, store, tabs, groups, sessions, wm, adblock, upd };
+  ctx = { state, store, tabs, groups, sessions, wm, adblock, upd, freevpn };
 
   /* وضع الفحص الآلي: سيناريو عزل كامل + تحقق من حقن الهوية ثم خروج. */
   if (process.argv.includes('--smoke')) {

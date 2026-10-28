@@ -10,7 +10,7 @@ const { PRESETS } = require('../common/countries');
 const { makeT } = require('../common/strings');
 
 function install(deps) {
-  const { state, store, tabs, groups, sessions, adblock, layout, updater, win: wm } = deps;
+  const { state, store, tabs, groups, sessions, adblock, layout, updater, win: wm, freevpn } = deps;
   const t = makeT(() => state.state.settings.language || 'ar');
 
   ipcMain.handle(IPC.GET_STATE, () => state.state);
@@ -276,6 +276,42 @@ function install(deps) {
         case 'update:check': return updater.check(), true;
         case 'update:download': return updater.download(), true;
         case 'update:install': return updater.install(), true;
+
+        /* ------------------------------------------------- VPN المجاني */
+        case 'vpn:list': {
+          /* القائمة الحالية (تسحب تلقائياً عند أول استخدام/قدم القائمة) */
+          const res = await freevpn.refresh({ nodeLog: (m) => state.sendEvent('vpn:progress', { text: m }) });
+          state.state.vpn = { nodes: freevpn.nodes(), testing: false, at: freevpn.list.at, error: res.error || null };
+          state.sendEvent('vpn:updated', { total: freevpn.count() });
+          return { ok: !res.error, ...(res.error ? {} : { total: freevpn.count() }), nodes: freevpn.nodes() };
+        }
+        case 'vpn:refresh': {
+          state.state.vpn = { ...(state.state.vpn || {}), testing: true };
+          state.sendEvent('vpn:updated', { testing: true });
+          const res = await freevpn.refresh({ force: true, nodeLog: (m) => state.sendEvent('vpn:progress', { text: m }) });
+          state.state.vpn = { nodes: freevpn.nodes(), testing: false, at: freevpn.list.at, error: res.error || null };
+          state.sendEvent('vpn:updated', { total: freevpn.count(), testing: false });
+          if (res.error) state.sendEvent('toast', { kind: 'error', text: t('vpn.refreshFail') });
+          else state.sendEvent('toast', { kind: 'ok', text: t('vpn.refreshed', { n: String(res.added || 0) }) });
+          return { ok: !res.error, ...res, nodes: freevpn.nodes() };
+        }
+        case 'vpn:connect': {
+          /* ربط القروب بعقدة VPN: نفعّل بروكسي القروب بعنوان العقدة */
+          const g = groups.get(msg.groupId || groups.active()?.id);
+          if (!g) return { error: 'no group' };
+          const node = freevpn.nodes().find((n) => n.url === msg.url) || freevpn.nodes()[0];
+          if (!node) return { error: t('vpn.noNodes') };
+          groups.update(g.id, { proxy: { enabled: true, url: node.url, username: '', password: '', vpnNode: node } });
+          state.sendEvent('toast', { kind: 'ok', text: t('vpn.connected', { country: node.country, group: g.name }) });
+          return { ok: true, node };
+        }
+        case 'vpn:disconnect': {
+          const g = groups.get(msg.groupId || groups.active()?.id);
+          if (!g) return { error: 'no group' };
+          groups.update(g.id, { proxy: { enabled: false, vpnNode: null } });
+          state.sendEvent('toast', { kind: 'ok', text: t('vpn.disconnected', { group: g.name }) });
+          return { ok: true };
+        }
 
         /* ---------------------------------------------------------- متفرقات */
         case 'app:version': return { version: app.getVersion(), electron: process.versions.electron, chrome: process.versions.chrome };

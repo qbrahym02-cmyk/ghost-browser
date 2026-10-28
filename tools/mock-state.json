@@ -1,280 +1,338 @@
 {
-  "state": {
-    "groups": [
-      {
-        "id": "g1",
-        "name": "تيك توك أساسي",
-        "emoji": "🎵",
-        "color": "#7C5CFF",
-        "tabMode": "ghost",
-        "shields": {
-          "ads": true,
-          "trackers": true,
-          "annoyances": false
-        },
-        "proxy": {
-          "enabled": false,
-          "url": ""
-        },
-        "identity": {
-          "presetId": "us-ny",
-          "flag": "🇺🇸",
-          "country": "الولايات المتحدة",
-          "city": "نيويورك",
-          "timezone": "America/New_York",
-          "locale": "en-US",
-          "languages": [
-            "en-US",
-            "en"
-          ],
-          "screen": {
-            "width": 1920,
-            "height": 1080,
-            "dpr": 1
-          },
-          "webrtc": "no-leak",
-          "chromeVersion": "142.0"
-        }
-      },
-      {
-        "id": "g2",
-        "name": "متجر إندونيسيا",
-        "emoji": "🛒",
-        "color": "#37E2D5",
-        "tabMode": "shared",
-        "notes": "حساب المتجر: shop@ghost.io — PIN الشحن 4901",
-        "shields": {
-          "ads": true,
-          "trackers": true,
-          "annoyances": true
-        },
-        "proxy": {
-          "enabled": true,
-          "url": "socks5://103.12.44.10:1080",
-          "username": "",
-          "password": "",
-          "bypass": "<-loopback>",
-          "lastCheck": {
-            "ip": "103.12.44.10",
-            "country": "ID",
-            "city": "Jakarta",
-            "timezone": "Asia/Jakarta",
-            "at": 1790000000000
-          }
-        },
-        "identity": {
-          "presetId": "id-jkt",
-          "flag": "🇮🇩",
-          "country": "إندونيسيا",
-          "city": "جاكرتا",
-          "timezone": "Asia/Jakarta",
-          "locale": "id-ID",
-          "languages": [
-            "id-ID",
-            "id"
-          ],
-          "screen": {
-            "width": 1366,
-            "height": 768,
-            "dpr": 1
-          },
-          "webrtc": "no-leak",
-          "chromeVersion": "142.0"
-        }
-      },
-      {
-        "id": "g3",
-        "name": "أبحاث أوروبا",
-        "emoji": "🔬",
-        "color": "#FFB454",
-        "tabMode": "keep",
-        "shields": {
-          "ads": true,
-          "trackers": false,
-          "annoyances": false
-        },
-        "proxy": {
-          "enabled": false,
-          "url": ""
-        },
-        "identity": {
-          "presetId": "de-ber",
-          "flag": "🇩🇪",
-          "country": "ألمانيا",
-          "city": "برلين",
-          "timezone": "Europe/Berlin",
-          "locale": "de-DE",
-          "languages": [
-            "de-DE",
-            "de"
-          ],
-          "screen": {
-            "width": 2560,
-            "height": 1440,
-            "dpr": 1
-          },
-          "webrtc": "no-leak",
-          "chromeVersion": "142.0"
-        }
-      }
-    ],
-    "tabs": [
-      {
-        "id": "t1",
-        "groupId": "g1",
-        "mode": "ghost",
-        "title": "TikTok - Make Your Day",
-        "url": "https://www.tiktok.com/",
-        "favicons": [],
-        "loading": false,
-        "canGoBack": true,
-        "canGoForward": false,
-        "audible": false,
-        "muted": false,
-        "zoom": 0,
-        "crashed": false,
-        "frozen": false,
-        "blocked": 14,
-        "degraded": false,
-        "identity": {
-          "flag": "🇺",
-          "country": "الولايات المتحدة",
-          "city": "نيويورك",
-          "timezone": "America/New_York",
-          "locale": "en-US",
-          "webrtc": "no-leak"
-        },
-        "split": false
-      },
-      {
-        "id": "t2",
-        "groupId": "g1",
-        "mode": "ghost",
-        "title": "تاب جديد",
-        "url": "ghost://newtab/",
-        "favicons": [],
-        "loading": false,
-        "canGoBack": false,
-        "canGoForward": false,
-        "audible": false,
-        "muted": false,
-        "zoom": 0,
-        "crashed": false,
-        "frozen": false,
-        "blocked": 0,
-        "degraded": false,
-        "identity": {
-          "flag": "🇺",
-          "country": "الولايات المتحدة",
-          "city": "نيويورك",
-          "timezone": "America/New_York",
-          "locale": "en-US",
-          "webrtc": "no-leak"
-        },
-        "split": true
-      },
-      {
-        "id": "t3",
-        "groupId": "g2",
-        "mode": "shared",
-        "title": "Tokopedia — halaman utama",
-        "url": "https://www.tokopedia.com/",
-        "favicons": [],
-        "loading": true,
-        "canGoBack": false,
-        "canGoForward": false,
-        "audible": true,
-        "muted": false,
-        "zoom": 0,
-        "crashed": false,
-        "frozen": false,
-        "blocked": 31,
-        "degraded": false,
-        "identity": {
-          "flag": "🇮🇩",
-          "country": "إندونيسيا",
-          "city": "جاكرتا",
-          "timezone": "Asia/Jakarta",
-          "locale": "id-ID",
-          "webrtc": "no-leak"
-        },
-        "split": false
-      },
-      {
-        "id": "t4",
-        "groupId": "g3",
-        "mode": "keep",
-        "title": "heise online — Nachrichten",
-        "url": "https://www.heise.de/",
-        "favicons": [],
-        "loading": false,
-        "canGoBack": true,
-        "canGoForward": true,
-        "audible": false,
-        "muted": true,
-        "zoom": 0,
-        "crashed": false,
-        "frozen": true,
-        "blocked": 7,
-        "degraded": false,
-        "identity": {
-          "flag": "🇩🇪",
-          "country": "ألمانيا",
-          "city": "برلين",
-          "timezone": "Europe/Berlin",
-          "locale": "de-DE",
-          "webrtc": "no-leak"
-        },
-        "split": false
-      }
-    ],
-    "activeTabId": "t1",
-    "activeGroupId": "g1",
-    "settings": {
-      "language": "ar",
-      "dir": "rtl",
-      "theme": "dark",
-      "searchEngine": "google",
-      "defaultTabMode": "ghost",
-      "rotateIdentityPerGhostTab": false,
-      "shieldsGlobal": true,
-      "dnt": true,
-      "gpc": true,
-      "memorySaver": {
-        "enabled": true,
-        "minutes": 10
-      },
-      "restoreSession": true,
-      "translateTarget": "",
-      "update": {
-        "auto": true,
-        "channel": "latest"
-      }
+ "state": {
+  "groups": [
+   {
+    "id": "g1",
+    "name": "تيك توك أساسي",
+    "emoji": "🎵",
+    "color": "#7C5CFF",
+    "tabMode": "ghost",
+    "shields": {
+     "ads": true,
+     "trackers": true,
+     "annoyances": false
     },
-    "ui": {
-      "sidebarCollapsed": false,
-      "dir": "rtl",
-      "overlayStack": [],
-      "immersive": false,
-      "splitTabId": null
+    "proxy": {
+     "enabled": false,
+     "url": "",
+     "username": "",
+     "password": "",
+     "lastCheck": null
     },
-    "downloads": [],
-    "bookmarks": [],
-    "sessionBundles": [],
-    "update": {
-      "status": "latest",
-      "version": "1.0.0"
+    "identity": {
+     "presetId": "us-ny",
+     "flag": "🇺🇸",
+     "country": "الولايات المتحدة",
+     "city": "نيويورك",
+     "timezone": "America/New_York",
+     "locale": "en-US",
+     "languages": [
+      "en-US",
+      "en"
+     ],
+     "screen": {
+      "width": 1920,
+      "height": 1080,
+      "dpr": 1
+     },
+     "webrtc": "no-leak",
+     "chromeVersion": "142.0"
+    }
+   },
+   {
+    "id": "g2",
+    "name": "متجر إندونيسيا",
+    "emoji": "🛒",
+    "color": "#37E2D5",
+    "tabMode": "shared",
+    "notes": "حساب المتجر: shop@ghost.io — PIN الشحن 4901",
+    "shields": {
+     "ads": true,
+     "trackers": true,
+     "annoyances": true
     },
-    "adblock": {
-      "engine": "ghostery",
-      "lists": [],
-      "updating": false,
-      "lastUpdate": null
+    "proxy": {
+     "enabled": true,
+     "url": "socks5://103.12.44.10:1080",
+     "username": "",
+     "password": "",
+     "bypass": "<-loopback>",
+     "lastCheck": {
+      "ip": "103.12.44.10",
+      "country": "ID",
+      "city": "Jakarta",
+      "timezone": "Asia/Jakarta",
+      "at": 1790000000000
+     }
     },
-    "stats": {
-      "blockedTotal": 512,
-      "blockedSession": 52
+    "identity": {
+     "presetId": "id-jkt",
+     "flag": "🇮🇩",
+     "country": "إندونيسيا",
+     "city": "جاكرتا",
+     "timezone": "Asia/Jakarta",
+     "locale": "id-ID",
+     "languages": [
+      "id-ID",
+      "id"
+     ],
+     "screen": {
+      "width": 1366,
+      "height": 768,
+      "dpr": 1
+     },
+     "webrtc": "no-leak",
+     "chromeVersion": "142.0"
+    }
+   },
+   {
+    "id": "g3",
+    "name": "أبحاث أوروبا",
+    "emoji": "🔬",
+    "color": "#FFB454",
+    "tabMode": "keep",
+    "shields": {
+     "ads": true,
+     "trackers": false,
+     "annoyances": false
     },
-    "ready": true
+    "proxy": {
+     "enabled": false,
+     "url": ""
+    },
+    "identity": {
+     "presetId": "de-ber",
+     "flag": "🇩🇪",
+     "country": "ألمانيا",
+     "city": "برلين",
+     "timezone": "Europe/Berlin",
+     "locale": "de-DE",
+     "languages": [
+      "de-DE",
+      "de"
+     ],
+     "screen": {
+      "width": 2560,
+      "height": 1440,
+      "dpr": 1
+     },
+     "webrtc": "no-leak",
+     "chromeVersion": "142.0"
+    }
+   }
+  ],
+  "tabs": [
+   {
+    "id": "t1",
+    "groupId": "g1",
+    "mode": "ghost",
+    "title": "TikTok - Make Your Day",
+    "url": "https://www.tiktok.com/",
+    "favicons": [],
+    "loading": false,
+    "canGoBack": true,
+    "canGoForward": false,
+    "audible": false,
+    "muted": false,
+    "zoom": 0,
+    "crashed": false,
+    "frozen": false,
+    "blocked": 14,
+    "degraded": false,
+    "identity": {
+     "flag": "🇺",
+     "country": "الولايات المتحدة",
+     "city": "نيويورك",
+     "timezone": "America/New_York",
+     "locale": "en-US",
+     "webrtc": "no-leak"
+    },
+    "split": false
+   },
+   {
+    "id": "t2",
+    "groupId": "g1",
+    "mode": "ghost",
+    "title": "تاب جديد",
+    "url": "ghost://newtab/",
+    "favicons": [],
+    "loading": false,
+    "canGoBack": false,
+    "canGoForward": false,
+    "audible": false,
+    "muted": false,
+    "zoom": 0,
+    "crashed": false,
+    "frozen": false,
+    "blocked": 0,
+    "degraded": false,
+    "identity": {
+     "flag": "🇺",
+     "country": "الولايات المتحدة",
+     "city": "نيويورك",
+     "timezone": "America/New_York",
+     "locale": "en-US",
+     "webrtc": "no-leak"
+    },
+    "split": true
+   },
+   {
+    "id": "t3",
+    "groupId": "g2",
+    "mode": "shared",
+    "title": "Tokopedia — halaman utama",
+    "url": "https://www.tokopedia.com/",
+    "favicons": [],
+    "loading": true,
+    "canGoBack": false,
+    "canGoForward": false,
+    "audible": true,
+    "muted": false,
+    "zoom": 0,
+    "crashed": false,
+    "frozen": false,
+    "blocked": 31,
+    "degraded": false,
+    "identity": {
+     "flag": "🇮🇩",
+     "country": "إندونيسيا",
+     "city": "جاكرتا",
+     "timezone": "Asia/Jakarta",
+     "locale": "id-ID",
+     "webrtc": "no-leak"
+    },
+    "split": false
+   },
+   {
+    "id": "t4",
+    "groupId": "g3",
+    "mode": "keep",
+    "title": "heise online — Nachrichten",
+    "url": "https://www.heise.de/",
+    "favicons": [],
+    "loading": false,
+    "canGoBack": true,
+    "canGoForward": true,
+    "audible": false,
+    "muted": true,
+    "zoom": 0,
+    "crashed": false,
+    "frozen": true,
+    "blocked": 7,
+    "degraded": false,
+    "identity": {
+     "flag": "🇩🇪",
+     "country": "ألمانيا",
+     "city": "برلين",
+     "timezone": "Europe/Berlin",
+     "locale": "de-DE",
+     "webrtc": "no-leak"
+    },
+    "split": false
+   }
+  ],
+  "activeTabId": "t1",
+  "activeGroupId": "g1",
+  "settings": {
+   "language": "ar",
+   "dir": "rtl",
+   "theme": "dark",
+   "searchEngine": "google",
+   "defaultTabMode": "ghost",
+   "rotateIdentityPerGhostTab": false,
+   "shieldsGlobal": true,
+   "dnt": true,
+   "gpc": true,
+   "memorySaver": {
+    "enabled": true,
+    "minutes": 10
+   },
+   "restoreSession": true,
+   "translateTarget": "",
+   "update": {
+    "auto": true,
+    "channel": "latest"
+   }
+  },
+  "ui": {
+   "sidebarCollapsed": false,
+   "dir": "rtl",
+   "overlayStack": [
+    {
+     "kind": "vpn"
+    }
+   ],
+   "immersive": false,
+   "splitTabId": null
+  },
+  "downloads": [],
+  "bookmarks": [],
+  "sessionBundles": [],
+  "update": {
+   "status": "latest",
+   "version": "1.0.0"
+  },
+  "adblock": {
+   "engine": "ghostery",
+   "lists": [],
+   "updating": false,
+   "lastUpdate": null
+  },
+  "stats": {
+   "blockedTotal": 512,
+   "blockedSession": 52
+  },
+  "ready": true,
+  "vpn": {
+   "nodes": [
+    {
+     "url": "socks5://213.165.54.5:1080",
+     "scheme": "socks5",
+     "host": "213.165.54.5",
+     "port": "1080",
+     "country": "DE",
+     "city": "Munich",
+     "latency": 720,
+     "checkedAt": 0,
+     "score": 1
+    },
+    {
+     "url": "socks5://95.83.152.62:1080",
+     "scheme": "socks5",
+     "host": "95.83.152.62",
+     "port": "1080",
+     "country": "RU",
+     "city": "Moscow",
+     "latency": 1480,
+     "checkedAt": 0,
+     "score": 1
+    },
+    {
+     "url": "http://45.138.157.212:8080",
+     "scheme": "http",
+     "host": "45.138.157.212",
+     "port": "8080",
+     "country": "US",
+     "city": "Ashburn",
+     "latency": 310,
+     "checkedAt": 0,
+     "score": 1
+    },
+    {
+     "url": "socks5://103.10.63.13:1080",
+     "scheme": "socks5",
+     "host": "103.10.63.13",
+     "port": "1080",
+     "country": "ID",
+     "city": "Jakarta",
+     "latency": 2900,
+     "checkedAt": 0,
+     "score": 1
+    }
+   ],
+   "testing": false,
+   "at": 1761500000000,
+   "error": null
   }
+ }
 }

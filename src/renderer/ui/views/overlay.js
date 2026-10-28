@@ -71,6 +71,7 @@ function palettePanel(state) {
       { label: t('palette.panic'), run: () => action('panic', {}) },
       { label: t('palette.immersive'), run: () => action('ui:immersive', {}) },
       { label: t('palette.checkUpdate'), run: () => action('update:check', {}) },
+      { label: `🛡 ${t('vpn.title')}`, run: () => action('ui:overlay-push', { kind: 'vpn' }) },
       { label: t('palette.adblockUpdate'), run: () => action('adblock:update-lists', {}) },
     ];
     for (const g of state.groups || []) {
@@ -387,6 +388,7 @@ function menuPanel(state) {
     http ? item(t('nav.translate'), () => action('tab:translate', { id: state.activeTabId }), '🌐') : null,
     http ? item(t('nav.qr'), () => action('ui:overlay-push', { kind: 'qr', params: { url: tab.url } }), '📱') : null,
     item(t('overlay.downloads'), () => action('ui:overlay-push', { kind: 'downloads' }), '⬇️'),
+    item(t('vpn.title'), () => action('ui:overlay-push', { kind: 'vpn' }), '🛡'),
     item(t('overlay.bookmarks'), () => action('ui:overlay-push', { kind: 'bookmarks' }), '⭐'),
     item(t('overlay.cookies'), () => action('ui:overlay-push', { kind: 'cookies' }), '🍪'),
     item(t('overlay.bundles'), () => action('ui:overlay-push', { kind: 'bundles' }), '🗂'),
@@ -397,6 +399,69 @@ function menuPanel(state) {
     item(t('overlay.about'), () => action('ui:overlay-push', { kind: 'about' }), 'ℹ️'),
     updateStatusLine(state),
   );
+}
+
+/* ------------------------------------------------------------ لوحة VPN المجاني */
+function vpnPanel(state) {
+  const g = groupOf(state, state.activeGroupId);
+  const nodes = state.vpn?.nodes || [];
+  const connectedUrl = g?.proxy?.enabled ? g.proxy.url : null;
+  const testing = !!state.vpn?.testing;
+
+  /* فلتر الدول المُستخلص من العقد المتاحة */
+  const countries = [...new Set(nodes.map((n) => n.country).filter(Boolean))].sort();
+  let filter = 'ALL';
+
+  const listWrap = el('div', 'vpnlist');
+
+  const speedTag = (ms) => ms < 900 ? t('vpn.speedFast') : ms < 2500 ? t('vpn.speedOk') : t('vpn.speedSlow');
+
+  function renderNodes() {
+    clear(listWrap);
+    const shown = filter === 'ALL' ? nodes : nodes.filter((n) => n.country === filter);
+    if (!shown.length) {
+      listWrap.append(h('div', { class: 'empty', text: testing ? t('vpn.testing') : t('vpn.empty') }));
+      return;
+    }
+    for (const n of shown.slice(0, 30)) {
+      const on = connectedUrl === n.url;
+      const item = el('button', 'vpnnode' + (on ? ' on' : ''));
+      item.append(
+        h('span', { class: 'vflag', text: countryFlag(n.country) }),
+        h('div', { class: 'vinfo' },
+          h('div', { class: 'vname', text: `${n.country}${n.city ? ' · ' + n.city : ''}${on ? ' · ✓ ' + t('vpn.active') : ''}` }),
+          h('div', { class: 'vmeta mono', text: `${n.scheme} · ${n.host}:${n.port}` })),
+        h('div', { class: 'vstats' },
+          h('span', { class: 'vlat ' + (n.latency < 900 ? 'fast' : n.latency < 2500 ? 'ok' : 'slow'), text: `${n.latency}ms · ${speedTag(n.latency)}` }),
+          on
+            ? btn(t('vpn.disconnect'), () => action('vpn:disconnect', { groupId: g.id }), 'btn tiny danger')
+            : btn(t('vpn.connect'), () => action('vpn:connect', { groupId: g.id, url: n.url }), 'btn tiny primary')),
+      );
+      listWrap.append(item);
+    }
+  }
+
+  const filterSel = select([['ALL', t('vpn.all')], ...countries.map((c) => [c, `${countryFlag(c)} ${c}`])], 'ALL', (v) => { filter = v; renderNodes(); });
+
+  const box = panel('vpn', `🛡 ${t('vpn.title')}${g ? ' — ' + t('vpn.forGroup') + ': ' + (g.emoji || '') + ' ' + g.name : ''}`,
+    h('p', { class: 'fineprint', text: t('vpn.subtitle') }),
+    h('div', { class: 'vpntoolbar' },
+      filterSel,
+      btn(testing ? t('group.proxyChecking') : t('vpn.refresh'), () => action('vpn:refresh', {}), 'btn primary tiny'),
+      h('span', { class: 'vpnstatus', text: nodes.length ? `${nodes.length} ✓` : '—' })),
+    listWrap,
+    connectedUrl
+      ? h('div', { class: 'vpncard on' },
+          h('div', { class: 'vpnwave', text: '📶' }),
+          h('div', { class: 'vpnstate' },
+            h('b', { text: t('vpn.active') }),
+            h('span', { class: 'mono', text: connectedUrl })),
+          btn(t('vpn.disconnect'), () => action('vpn:disconnect', { groupId: g.id }), 'btn tiny danger'))
+      : null,
+    h('p', { class: 'fineprint warn', text: '⚠ ' + t('vpn.freedom') }),
+  );
+  renderNodes();
+  return box;
 }
 
 function aboutPanel(state) {
@@ -449,6 +514,7 @@ export function mountOverlay(root) {
       case 'qr': panelEl = qrPanel(state, top.params); break;
       case 'menu': panelEl = menuPanel(state); break;
       case 'about': panelEl = aboutPanel(state); break;
+      case 'vpn': panelEl = vpnPanel(state); break;
       default: panelEl = panel('unknown', top.kind);
     }
     backdrop.append(panelEl);

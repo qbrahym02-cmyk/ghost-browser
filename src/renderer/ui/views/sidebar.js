@@ -19,6 +19,7 @@ export function mountSidebar(root) {
   const footBtn = (icon, label, kind) => h('button', { class: 'sb-footbtn', title: label, onclick: () => action('ui:overlay-push', { kind }) }, svg(icon, 15), h('span', { class: 'lbl', text: label }));
   foot.append(
     footBtn(ICONS.download, t('overlay.downloads'), 'downloads'),
+    footBtn(ICONS.globe, t('vpn.title'), 'vpn'),
     footBtn(ICONS.book, t('overlay.bookmarks'), 'bookmarks'),
     footBtn(ICONS.layers, t('overlay.bundles'), 'bundles'),
     footBtn(ICONS.settings, t('sidebar.settings'), 'settings'),
